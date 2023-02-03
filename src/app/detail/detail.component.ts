@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormDataService } from '../form-data.service';
-import { FormDataModel } from '../form/form-data.model';
+import { FormDataModel } from '../form-data.model';
 
 @Component({
   selector: 'app-detail',
