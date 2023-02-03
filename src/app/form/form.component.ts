@@ -15,7 +15,7 @@ import { FormDataModel } from './form-data.model';
 })
 export class FormComponent implements OnInit {
   form = new FormGroup({
-    'firstName': new FormControl('', [Validators.required, forbiddenNamesValidator(['Stefan', 'Paweł'])]),
+    'firstName': new FormControl('', [Validators.required, forbiddenNamesValidator(['Test', 'Imie'])]),
     'lastName': new FormControl('', Validators.required),
     'email': new FormControl('', [Validators.required, Validators.email]),
     'birthday': new FormControl('', [Validators.required, dateValidator]),
