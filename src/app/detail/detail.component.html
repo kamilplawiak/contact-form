@@ -1,0 +1,50 @@
+<div class="container">
+    <h3>Row information</h3>
+    <p>
+        <b>First name: </b>
+        {{ activeRow.getData().firstName }}
+    </p>
+    
+    <p>
+        <b>Last name: </b>
+        {{ activeRow.getData().lastName }}
+    </p>
+    <p>
+        <b>E-mail: </b>
+        {{ activeRow.getData().email }}
+    </p>
+    <p>
+        <b>Date of birth: </b>
+        {{ activeRow.getData().birthday }}
+    </p>
+    <p>
+        <b>Voivodeship: </b>
+        {{ activeRow.getData().voivodeship }}
+    </p>
+    <p>
+        <b>City: </b>
+        {{ activeRow.getData().city }}
+    </p>
+    <p>
+        <b>Address: </b>
+        {{ activeRow.getData().address }}
+    </p>
+
+    <p>
+        <b>Postal code: </b>
+        {{ activeRow.getData().postalCode }}
+    </p>
+
+    <p>
+        <b>Timestamp: </b>
+        {{ activeRow.getTimestamp() }}
+    </p>
+</div>
+
+<div class="container">
+    <button
+        class="btn btn-danger"
+        (click)="navigateBack()">
+        Back
+    </button>
+</div>

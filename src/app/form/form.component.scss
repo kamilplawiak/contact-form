@@ -1,0 +1,23 @@
+$error-color: #ff6b6b;
+
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+input.invalid.ng-touched {
+    border-color: $error-color;
+    box-shadow: 0 0 0 0.25rem rgba(#ff6b6b, 0.5);
+}
+
+.error-msg {
+    color: $error-color;
+}
+
+.function-button {
+    cursor: pointer;
+}
