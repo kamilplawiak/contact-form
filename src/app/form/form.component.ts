@@ -7,6 +7,7 @@ import { FormDataService } from '../form-data.service';
 import { dateValidator } from '../validators/date.validator';
 import { forbiddenNamesValidator } from '../validators/forbidden-names.validator';
 import { FormDataModel } from '../form-data.model';
+import { lastNameValidator } from '../validators/last-name.validator';
 
 @Component({
   selector: 'app-form',
@@ -16,7 +17,7 @@ import { FormDataModel } from '../form-data.model';
 export class FormComponent implements OnInit {
   form = new FormGroup({
     'firstName': new FormControl('', [Validators.required, forbiddenNamesValidator(['Test', 'Imie'])]),
-    'lastName': new FormControl('', Validators.required),
+    'lastName': new FormControl('', Validators.required, lastNameValidator(this.dataService)),
     'email': new FormControl('', [Validators.required, Validators.email]),
     'birthday': new FormControl('', [Validators.required, dateValidator]),
     'voivodeship': new FormControl('', Validators.required),
@@ -77,6 +78,12 @@ export class FormComponent implements OnInit {
     const index = this.tooltips.toArray().indexOf(tooltip);
     if(this.form.get(controlName).errors) this.tooltips.get(index).open();
     else this.tooltips.get(index).close();
+
+    this.form.get(controlName).statusChanges.subscribe((status) => {
+      if(status === 'INVALID') tooltip.open();
+      else tooltip.close();
+    })
+    
     this.isFormCorrect = this.form.valid;
   }
 

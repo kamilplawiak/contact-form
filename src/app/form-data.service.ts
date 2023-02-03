@@ -14,4 +14,13 @@ export class FormDataService {
     public addSubmission(submission: FormDataModel) {
         this.formSubmissions.push(submission);
     }
+
+    public getLastNames() : string[] {
+        const arr: string[] = [];
+        for(const submission of this.formSubmissions) {
+            arr.push(submission.getData().lastName);
+        }
+
+        return arr;
+    }
 }
