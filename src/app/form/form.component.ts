@@ -76,14 +76,12 @@ export class FormComponent implements OnInit {
 
   onInputChange(tooltip: NgbTooltip, controlName: string) {
     const index = this.tooltips.toArray().indexOf(tooltip);
-    if(this.form.get(controlName).errors) this.tooltips.get(index).open();
-    else this.tooltips.get(index).close();
 
     this.form.get(controlName).statusChanges.subscribe((status) => {
-      if(status === 'INVALID') tooltip.open();
+      if(status === 'INVALID' && this.form.get(controlName).dirty) tooltip.open();
       else tooltip.close();
     })
-    
+
     this.isFormCorrect = this.form.valid;
   }
 
@@ -106,6 +104,7 @@ export class FormComponent implements OnInit {
 
     this.isFormSubmitted = true;
     this.editingIndex = -1;
+    this.form.reset();
   }
 
   onReset() {
