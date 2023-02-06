@@ -59,6 +59,14 @@ export class FormComponent implements OnInit {
     'Warmińsko-mazurskie': ['Olsztyn', 'Elbląg', 'Giżycko', 'Iława', 'Pisz']
   }
 
+  dontRequireWhenSelected = {
+    voivodeship: {
+      'Mazowieckie': 'birthday',
+      'Pomorskie': 'address'
+    },
+    previousValue: null
+  }
+
   @ViewChildren('t1, t2, t3, t4, t5, t6, t7, t8') tooltips : QueryList<NgbTooltip>;
 
   constructor(private dataService: FormDataService,
@@ -74,6 +82,8 @@ export class FormComponent implements OnInit {
   }
 
   onInputChange(tooltip: NgbTooltip, controlName: string, target: HTMLInputElement = null) {
+    this.updateValidators(controlName);
+
     const index = this.tooltips.toArray().indexOf(tooltip);
 
     if(target)
@@ -125,7 +135,7 @@ export class FormComponent implements OnInit {
       'city': submission.getData().city,
       'address': submission.getData().address,
       'postalCode': submission.getData().postalCode,
-    })
+    });
   }
 
   onDelete(index: number) {
@@ -139,5 +149,22 @@ export class FormComponent implements OnInit {
         id: index
       }
     })
+  }
+
+  updateValidators(controlName: string) {
+    const control = this.form.get(controlName);
+
+    if(!this.dontRequireWhenSelected[controlName] || !this.dontRequireWhenSelected[controlName][control.value])
+      return;
+
+    if(this.dontRequireWhenSelected.previousValue) {
+      this.dontRequireWhenSelected.previousValue.addValidators([Validators.required]);
+      this.dontRequireWhenSelected.previousValue.updateValueAndValidity();
+    }
+
+    const targetControl = this.form.get(this.dontRequireWhenSelected[controlName][control.value]);
+    targetControl.removeValidators([Validators.required]);
+    targetControl.updateValueAndValidity();
+    this.dontRequireWhenSelected.previousValue = targetControl;
   }
 }
