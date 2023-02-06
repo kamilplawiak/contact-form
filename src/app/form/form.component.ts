@@ -1,6 +1,6 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterContentInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { createMask } from '@ngneat/input-mask';
 import { FormDataService } from '../form-data.service';
@@ -15,6 +15,13 @@ import { lastNameValidator } from '../validators/last-name.validator';
   styleUrls: ['./form.component.scss']
 })
 export class FormComponent implements OnInit {
+  isFormSubmitted = false;
+  hideRequired = true;
+  editingIndex = this.dataService.getEditingIndex();
+  firstNameMaxLength = 24;
+  lastNameMaxLength = 32;
+  addressMaxLength = 32;
+
   form = new FormGroup({
     'firstName': new FormControl('', [Validators.required, forbiddenNamesValidator(['Test', 'Imie'])]),
     'lastName': new FormControl('', Validators.required, lastNameValidator(this.dataService)),
@@ -25,6 +32,8 @@ export class FormComponent implements OnInit {
     'address': new FormControl('', Validators.required),
     'postalCode': new FormControl('', Validators.required),
   })
+
+  isFormCorrect = this.form.valid;
 
   formData = {
     'firstName': '',
@@ -38,24 +47,10 @@ export class FormComponent implements OnInit {
   }
 
 
-  maxLengthMask = createMask({
-    placeholder: '',
-    regex: `[a-zA-ZąęłżźńóśĄĘŁŻŹŃÓŚ ]{1,24}`
-  });
-  maxLengthWithDigitsMask = createMask({
-    placeholder: '',
-    regex: `[0-9a-zA-ZąęłżźńóśĄĘŁŻŹŃÓŚ ]{1,24}`
-  });
   postalCodeMask = createMask({
     placeholder: '__-___',
     regex: '\\d{2}-\\d{3}'
   })
-
-
-  isFormCorrect = this.form.valid;
-  isFormSubmitted = false;
-  hideRequired = true;
-  editingIndex = -1;
 
   voivodeships = ['Mazowieckie', 'Pomorskie', 'Warmińsko-mazurskie']
   cities = {
@@ -68,14 +63,21 @@ export class FormComponent implements OnInit {
 
   constructor(private dataService: FormDataService,
               private router: Router,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute) {
+
+              this.route.queryParams.subscribe((params: Params) => {
+                this.isFormSubmitted = (params['show'] === 'true');
+              })
+            }
 
   ngOnInit(): void {
-    this.isFormSubmitted = this.route.snapshot.data.show;
   }
 
-  onInputChange(tooltip: NgbTooltip, controlName: string) {
+  onInputChange(tooltip: NgbTooltip, controlName: string, target: HTMLInputElement = null) {
     const index = this.tooltips.toArray().indexOf(tooltip);
+
+    if(target)
+      target.parentElement.setAttribute('data-chars-left', ''+(target.maxLength - target.value.length));
 
     this.form.get(controlName).statusChanges.subscribe((status) => {
       if(status === 'INVALID' && this.form.get(controlName).dirty) tooltip.open();
@@ -97,13 +99,13 @@ export class FormComponent implements OnInit {
       'postalCode': this.form.get('postalCode').value,
     }
 
-    if(this.editingIndex >= 0) 
-      this.dataService.getSubmissions()[this.editingIndex].setData(this.formData);
+    if(this.dataService.getEditingIndex() >= 0) 
+      this.dataService.getSubmissions()[this.dataService.getEditingIndex()].setData(this.formData);
     else
       this.dataService.addSubmission(new FormDataModel(this.formData, new Date()));
 
     this.isFormSubmitted = true;
-    this.editingIndex = -1;
+    this.dataService.setEditingIndex(-1);
     this.form.reset();
   }
 
@@ -112,7 +114,7 @@ export class FormComponent implements OnInit {
   }
 
   onEdit(index: number) {
-    this.editingIndex = index;
+    this.dataService.setEditingIndex(index);
     const submission = this.dataService.getSubmissions()[index];
     this.form.setValue({
       'firstName': submission.getData().firstName,
@@ -131,8 +133,11 @@ export class FormComponent implements OnInit {
   }
 
   showDetail(index: number) {
-    this.router.navigate([`/detail/${index}`], {
-      relativeTo: this.route
+    this.router.navigate(['/detail'], {
+      relativeTo: this.route,
+      queryParams: {
+        id: index
+      }
     })
   }
 }

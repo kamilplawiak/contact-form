@@ -5,8 +5,7 @@ import { FormComponent } from './form/form.component';
 
 const routes: Routes = [
   { path: '', component: FormComponent },
-  { path: 'back', component: FormComponent, data: { show: true } },
-  { path: 'detail/:id', component: DetailComponent }
+  { path: 'detail', component: DetailComponent }
 ];
 
 @NgModule({

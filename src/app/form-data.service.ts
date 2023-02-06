@@ -6,9 +6,18 @@ import { FormDataModel } from "./form-data.model";
 })
 export class FormDataService {
     private formSubmissions: FormDataModel[] = [];
+    private editingIndex: number = -1;
+
+    public getEditingIndex() : number {
+        return this.editingIndex;
+    }
 
     public getSubmissions() : FormDataModel[] {
         return this.formSubmissions;
+    }
+
+    public setEditingIndex(n: number) {
+        this.editingIndex = n;
     }
 
     public addSubmission(submission: FormDataModel) {

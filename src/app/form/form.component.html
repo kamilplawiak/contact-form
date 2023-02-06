@@ -2,15 +2,18 @@
     <form [formGroup]="form">
         <div class="d-flex justify-content-center align-items-center flex-wrap">
             <div
-                style="flex: 45%"
+                style="flex: 45%;"
                 class="mx-2 my-2">
                 <label>
                     First name
                 </label>
-                <input
-                    [inputMask]="maxLengthMask"
+                <div
+                    class="input-wrapper"
+                    [attr.data-chars-left]="+firstNameMaxLength">
+                    <input
                     [ngClass]="{ invalid: form.get('firstName').errors }"
-                    (input)="onInputChange(t1, 'firstName')"
+                    (input)="onInputChange(t1, 'firstName', $event.target)"
+                    [maxlength]="firstNameMaxLength"
                     type="text"
                     #t1="ngbTooltip"
                     placeholder="Jan"
@@ -20,6 +23,7 @@
                     [autoClose]="false"
                     placement="top"
                     ngbTooltip="Please enter a correct name!">
+                </div>
             </div>
 
             <div
@@ -28,11 +32,14 @@
                 <label>
                     Last name
                 </label>
-                <input
-                    [inputMask]="maxLengthMask"
+                <div
+                    class="input-wrapper"
+                    [attr.data-chars-left]="lastNameMaxLength">
+                    <input
                     [ngClass]="{ invalid: form.get('lastName').errors }"
-                    (input)="onInputChange(t2, 'lastName')"
+                    (input)="onInputChange(t2, 'lastName', $event.target)"
                     type="text"
+                    [maxlength]="lastNameMaxLength"
                     placeholder="Kowalski"
                     class="form-control"
                     formControlName="lastName"
@@ -41,6 +48,7 @@
                     #t2="ngbTooltip"
                     placement="top"
                     ngbTooltip="Please enter a correct name!">
+                </div>
             </div>
 
             <div
@@ -139,10 +147,13 @@
                 <label>
                     Address
                 </label>
-                <input
-                    [inputMask]="maxLengthWithDigitsMask"
+                <div
+                    class="input-wrapper"
+                    [attr.data-chars-left]="addressMaxLength">
+                    <input
                     [ngClass]="{ invalid: form.get('address').errors }"
-                    (input)="onInputChange(t7, 'address')"
+                    [maxlength]="addressMaxLength"
+                    (input)="onInputChange(t7, 'address', $event.target)"
                     class="form-control"
                     type="text"
                     formControlName="address"
@@ -151,6 +162,7 @@
                     [autoClose]="false"
                     placement="top"
                     ngbTooltip="Please enter a correct address!">
+                </div>
             </div>
 
             <div

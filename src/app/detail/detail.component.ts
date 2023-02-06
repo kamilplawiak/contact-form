@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { FormDataService } from '../form-data.service';
 import { FormDataModel } from '../form-data.model';
 
@@ -15,15 +15,24 @@ export class DetailComponent implements OnInit {
 
   constructor(private dataService: FormDataService,
               private router: Router,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute) {
+
+              this.route.queryParams.subscribe((params: Params) => {
+                this.index = params['id'];
+              })
+            }
 
   ngOnInit(): void {
     this.formSubmissions = this.dataService.getSubmissions();
-    this.index = +this.route.snapshot.params['id'];
     this.activeRow = this.formSubmissions[this.index];
   }
 
   navigateBack() {
-    this.router.navigate(['/back']);
+    this.router.navigate(['/'], {
+      relativeTo: this.route,
+      queryParams: {
+        show: true
+      }
+    });
   }
 }

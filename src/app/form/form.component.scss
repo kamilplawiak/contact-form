@@ -21,3 +21,16 @@ input.invalid.ng-dirty {
 .function-button {
     cursor: pointer;
 }
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper::before {
+    content: attr(data-chars-left);
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 0.75rem;
+    position: absolute;
+    top: calc(0% + 10px);
+    right: calc(0% + 15px);
+}

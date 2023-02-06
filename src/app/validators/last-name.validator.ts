@@ -6,10 +6,10 @@ export function lastNameValidator(dataService: FormDataService) : AsyncValidator
     return (control: AbstractControl) : Observable<ValidationErrors> | Promise<ValidationErrors> => {
         const promise = new Promise((resolve, reject) => {
             setTimeout(() => {
-                if(dataService.getLastNames().indexOf(control.value) >= 0) 
+                if(dataService.getLastNames().indexOf(control.value) >= 0 && dataService.getEditingIndex() === -1) {
                     resolve({
                         'invalidLastName': true
-                    });
+                    });}
                 else resolve(null);
             }, 1500)
         })
